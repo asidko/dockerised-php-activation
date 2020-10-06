@@ -16,7 +16,7 @@ class SerialActivationOutputDTO
 
     public $serialPeriod;
 
-    public $activatedAt;
+    public $serialActivatedAt;
 
     public function __construct(
         string $status,
@@ -25,7 +25,7 @@ class SerialActivationOutputDTO
         string $encryptedHash = "",
         string $publicKey = "",
         int    $serialPeriod = 0,
-        string $activatedAt = ""
+        string $serialActivatedAt = ""
     ) {
         $this->encryptedHash = $encryptedHash;
         $this->key = $publicKey;
@@ -33,7 +33,7 @@ class SerialActivationOutputDTO
         $this->userName = $userName;
         $this->serial = $serial;
         $this->serialPeriod = $serialPeriod;
-        $this->activatedAt=$activatedAt;
+        $this->serialActivatedAt=$serialActivatedAt;
     }
 
     public static function ofStatus($status)
@@ -71,8 +71,8 @@ class SerialActivationOutputDTO
         return $this->serialPeriod;
     }
 
-    public function getActivatedAt(): string
+    public function getSerialActivatedAt(): string
     {
-        return $this->activatedAt;
+        return $this->serialActivatedAt;
     }
 }

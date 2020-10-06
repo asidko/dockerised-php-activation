@@ -106,7 +106,7 @@ if ($shouldActivateSerial) {
 <?php if (isset($activationResult)) : ?>
     <table class="response-details">
         <tr>
-            <td colspan="2">Details:</td>
+            <td colspan="2"><h3>Serial activation response</h3></td>
         </tr>
         <?php foreach ($activationResult as $key => $value): ?>
             <tr>

@@ -128,17 +128,22 @@ class ActivationService
         $userSerial->setActivatedAt(date('Y-m-d'));
         ActivationFactory::userSerialRepository()->save($userSerial);
 
-        // Find encrypted pcHash
+        // Find encrypted hash
         $keyId = $serial->getKeyId();
         $key = ActivationFactory::keyRepository()->findById($keyId);
-        $pcHash = $activationDTO->getPcHash();
-        $userName = $userSerial->getUserName();
-        $encryptedHash = ActivationFactory::cipher()->encrypt($pcHash, $key->getPublicKey());
+        $dataToEncrypt = array(
+            'pc_hash' => $activationDTO->getPcHash(),
+            'product_name' => $userSerial->getProductName(),
+            'serial_activated_at' => $userSerial->getActivatedAt(),
+            'serial_period' => $serial->getPeriod());
+        $dataToEncryptJson = json_encode($dataToEncrypt);
+        $dataToEncryptHex = bin2hex($dataToEncryptJson);
+        $encryptedHash = ActivationFactory::cipher()->encrypt($dataToEncryptHex, $key->getPublicKey());
 
         // Create result
         $result = new SerialActivationOutputDTO(
             SerialActivationStatusEnum::ACTIVATED,
-            $userName,
+            $userSerial->getUserName(),
             $serial->getSerial(),
             $encryptedHash,
             $key->getPrivateKey(),
