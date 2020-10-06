@@ -131,24 +131,29 @@ class ActivationService
         // Find encrypted hash
         $keyId = $serial->getKeyId();
         $key = ActivationFactory::keyRepository()->findById($keyId);
-        $dataToEncrypt = array(
-            'pc_hash' => $activationDTO->getPcHash(),
-            'product_name' => $userSerial->getProductName(),
-            'serial_activated_at' => $userSerial->getActivatedAt(),
-            'serial_period' => $serial->getPeriod());
-        $dataToEncryptJson = json_encode($dataToEncrypt);
-        $dataToEncryptHex = bin2hex($dataToEncryptJson);
-        $encryptedHash = ActivationFactory::cipher()->encrypt($dataToEncryptHex, $key->getPublicKey());
+        $dataToSignArray = array(
+            $activationDTO->getPcHash(),
+            $userSerial->getProductName(),
+            $userSerial->getActivatedAt(),
+            $serial->getPeriod());
+        $dataToSignStr = join(".", $dataToSignArray);
+        echo "<pre>Data to sign: ".$dataToSignStr."</pre>";
+        $dataToSignStrHash = sha1($dataToSignStr);
+        echo "<pre>Data to sign sha1: ".$dataToSignStrHash."</pre>";
+        $opensslPrivateKey = openssl_pkey_get_private($key->getPrivateKey());
+        openssl_sign($dataToSignStrHash, $signedData, $opensslPrivateKey, OPENSSL_ALGO_SHA1);
+        $signedDataBase64 = base64_encode($signedData);
 
         // Create result
         $result = new SerialActivationOutputDTO(
             SerialActivationStatusEnum::ACTIVATED,
             $userSerial->getUserName(),
             $serial->getSerial(),
-            $encryptedHash,
-            $key->getPrivateKey(),
+            $signedDataBase64,
+            $key->getPublicKey(),
             $serial->getPeriod(),
-            $userSerial->getActivatedAt()
+            $userSerial->getActivatedAt(),
+            $userSerial->getProductName()
         );
 
         return $result;
