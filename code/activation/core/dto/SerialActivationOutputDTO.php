@@ -4,7 +4,7 @@ require_once __DIR__.'/SerialActivationStatusEnum.php';
 
 class SerialActivationOutputDTO
 {
-    public $signedData;
+    public $sign;
 
     public $key;
 
@@ -18,19 +18,22 @@ class SerialActivationOutputDTO
 
     public $serialActivatedAt;
 
+    public $pcHash;
+
     public $productName;
 
     public function __construct(
         string $status,
         string $userName = "",
         string $serial = "",
-        string $signedData = "",
+        string $sign = "",
         string $publicKey = "",
         int    $serialPeriod = 0,
         string $serialActivatedAt = "",
-        string $productName = ""
+        string $productName = "",
+        string $pcHash = ""
     ) {
-        $this->signedData = $signedData;
+        $this->sign = $sign;
         $this->key = $publicKey;
         $this->status = $status;
         $this->userName = $userName;
@@ -38,6 +41,7 @@ class SerialActivationOutputDTO
         $this->serialPeriod = $serialPeriod;
         $this->serialActivatedAt=$serialActivatedAt;
         $this->productName = $productName;
+        $this->pcHash = $pcHash;
     }
 
     public static function ofStatus($status)
@@ -50,9 +54,9 @@ class SerialActivationOutputDTO
         return $this->serial;
     }
 
-    public function getSignedData(): string
+    public function getSign(): string
     {
-        return $this->signedData;
+        return $this->sign;
     }
 
     public function getKey(): string
@@ -83,5 +87,10 @@ class SerialActivationOutputDTO
     public function getProductName(): string
     {
         return $this->productName;
+    }
+
+    public function getPcHash(): string
+    {
+        return $this->pcHash;
     }
 }

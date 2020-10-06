@@ -136,13 +136,12 @@ class ActivationService
             $userSerial->getProductName(),
             $userSerial->getActivatedAt(),
             $serial->getPeriod());
-        $dataToSignStr = join(".", $dataToSignArray);
+        $dataToSignStr = join(",", $dataToSignArray);
+        $dataToSignHash = sha1($dataToSignStr);
+        $signedDataBase64 = ActivationFactory::cipher()->sign($dataToSignHash, $key->getPrivateKey());
+
         echo "<pre>Data to sign: ".$dataToSignStr."</pre>";
-        $dataToSignStrHash = sha1($dataToSignStr);
-        echo "<pre>Data to sign sha1: ".$dataToSignStrHash."</pre>";
-        $opensslPrivateKey = openssl_pkey_get_private($key->getPrivateKey());
-        openssl_sign($dataToSignStrHash, $signedData, $opensslPrivateKey, OPENSSL_ALGO_SHA1);
-        $signedDataBase64 = base64_encode($signedData);
+        echo "<pre>Data to sign sha1: ".$dataToSignHash."</pre>";
 
         // Create result
         $result = new SerialActivationOutputDTO(
@@ -153,7 +152,8 @@ class ActivationService
             $key->getPublicKey(),
             $serial->getPeriod(),
             $userSerial->getActivatedAt(),
-            $userSerial->getProductName()
+            $userSerial->getProductName(),
+            $activationDTO->getPcHash()
         );
 
         return $result;

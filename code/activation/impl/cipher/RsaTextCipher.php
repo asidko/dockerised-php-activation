@@ -11,6 +11,14 @@ class RsaTextCipher implements TextCipher
         return base64_encode($encryptedData);
     }
 
+    function sign(string $text, string $privateKey): string
+    {
+        $opensslPrivateKey = openssl_pkey_get_private($privateKey);
+        openssl_sign($text, $signedData, $opensslPrivateKey, OPENSSL_ALGO_SHA1);
+
+        return base64_encode($signedData);
+    }
+
     public function decrypt(string $base64encryptedText, string $key): string
     {
         $encryptedText = base64_decode($base64encryptedText);
