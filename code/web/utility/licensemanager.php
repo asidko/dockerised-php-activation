@@ -11,7 +11,7 @@ if ($shouldAddNewSerial) {
     $userName = $_POST['name'];
     $pcCount = $_POST['pc_count'];
 
-    $dto = new SerialCreationDTO($userName, null, $pcCount);
+    $dto = new UserSerialCreationDTO($userName, null, $pcCount);
     ActivationService::instance()->makeNewSerialForUser($dto);
 }
 
@@ -63,6 +63,10 @@ if ($shouldActivateSerial) {
         <tr>
             <td>Name:</td>
             <td><input type="text" name="name" value="John Tao"></td>
+        </tr>
+        <tr>
+            <td>Period:</td>
+            <td><input type="number" name="period" value="30" step="30" style="width: 60px"> (дней)</td>
         </tr>
         <tr>
             <td>PC count:</td>
@@ -156,6 +160,7 @@ if ($shouldActivateSerial) {
         <th>key_id</th>
         <th>is_banned</th>
         <th>serial</th>
+        <th>period</th>
         <th>expire_date</th>
     </tr>
     <?php foreach ($serials as $serial): ?>
@@ -166,6 +171,7 @@ if ($shouldActivateSerial) {
             <td style="color: <?php echo '#'.substr(md5($serial->getId()), 0, 6); ?>">
                 <?php echo $serial->getSerial(); ?>
             </td>
+            <td> <?php echo $serial->getPeriod(); ?></td>
             <td> <?php echo $serial->getExpireDate(); ?></td>
         </tr>
     <?php endforeach; ?>

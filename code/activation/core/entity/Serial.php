@@ -15,14 +15,17 @@ class Serial
 
     private $serial;
 
+    private $period;
+
     private $expireDate;
 
-    public function __construct($id, int $keyId, bool $isBanned, string $serial, string $expireDate)
+    public function __construct($id, int $keyId, bool $isBanned, string $serial, int $period, string $expireDate)
     {
         $this->id = $id;
         $this->keyId = $keyId;
         $this->isBanned = $isBanned;
         $this->serial = $serial;
+        $this->period = $period;
         $this->expireDate = $expireDate;
     }
 
@@ -49,5 +52,11 @@ class Serial
     public function getExpireDate(): string
     {
         return $this->expireDate;
+    }
+
+
+    public function getPeriod(): int
+    {
+        return $this->period;
     }
 }

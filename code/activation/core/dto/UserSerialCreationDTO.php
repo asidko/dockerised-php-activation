@@ -1,6 +1,6 @@
 <?php
 
-class SerialCreationDTO {
+class UserSerialCreationDTO {
     private $userName;
     private $userId;
     private $pcCount;

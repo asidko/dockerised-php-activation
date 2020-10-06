@@ -4,7 +4,7 @@ require_once __DIR__.'/ActivationFactory.php';
 require_once __DIR__.'/impl/util/uuid.php';
 require_once __DIR__.'/core/dto/SerialActivationInputDTO.php';
 require_once __DIR__.'/core/dto/SerialActivationOutputDTO.php';
-require_once __DIR__.'/core/dto/SerialCreationDTO.php';
+require_once __DIR__ . '/core/dto/UserSerialCreationDTO.php';
 
 class ActivationService
 {
@@ -23,11 +23,11 @@ class ActivationService
      * Create and save new serial number for user.
      * If serial number or key for this serial number has not created yet, they will be created.
      *
-     * @param \SerialCreationDTO $creationDTO
+     * @param \UserSerialCreationDTO $creationDTO
      * @return void New user serial record id
      * @see \ActivationService::makeNewKey()
      */
-    public function makeNewSerialForUser(SerialCreationDTO $creationDTO)
+    public function makeNewSerialForUser(UserSerialCreationDTO $creationDTO)
     {
         $newSerialId = $this->makeNewSerial();
         $newUserSerial = new UserSerial(
@@ -66,8 +66,9 @@ class ActivationService
 
         $newSerialExpired = $date->format("Y-m-d");
         $newSerialNumber = uuid();
+        $newSerialPeriod = 30;
 
-        $newSerial = new Serial(null, $lastKeyId, false, $newSerialNumber, $newSerialExpired);
+        $newSerial = new Serial(null, $lastKeyId, false, $newSerialNumber, $newSerialPeriod, $newSerialExpired);
         $id = ActivationFactory::serialRepository()->save($newSerial);
 
         return $id;
