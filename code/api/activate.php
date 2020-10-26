@@ -19,10 +19,14 @@ header('Content-Type: application/json');
 $data = json_decode(file_get_contents('php://input'), true);
 
 
-if (isset($data['serial']) && isset($data['pc_hash'])) {
+if (isset($data['serial']) && isset($data['pc_hash']) && isset($_POST['product_name'])) {
     $serial = $data['serial'];
     $pcHash = $data['pc_hash'];
-    $activationResult = ActivationService::instance()->activateSerial(new SerialActivationInputDTO($serial, $pcHash));
+    $productName = $_POST['product_name'];
+
+    $dto = new SerialActivationInputDTO($serial, $pcHash, $productName);
+    $activationResult = ActivationService::instance()->activateSerial($dto);
+
     echo json_encode($activationResult);
 } else {
     http_response_code(500);
