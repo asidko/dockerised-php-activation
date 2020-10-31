@@ -16,10 +16,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
+// Assume data is raw JSON string
 $data = json_decode(file_get_contents('php://input'), true);
+// Assume data is Base64 encoded JSON string
 if (empty($data)) $data = json_decode(base64_decode(file_get_contents('php://input')));
 
-if (isset($data['serial']) && isset($data['pc_hash']) && isset($data['product_name'])) {
+$hasAllParams = isset($data['serial'])
+    && isset($data['pc_hash'])
+    && isset($data['product_name']);
+
+if ($hasAllParams) {
     $serial = $data['serial'];
     $pcHash = $data['pc_hash'];
     $productName = $data['product_name'];
@@ -30,6 +36,6 @@ if (isset($data['serial']) && isset($data['pc_hash']) && isset($data['product_na
     echo json_encode($activationResult);
 } else {
     http_response_code(500);
-    echo json_encode(["error"=>"Incorrect or missing data: 'serial' and 'pc_hash' parameters were expected", "error_name" => "INVALID_PARAMS"]);
+    echo json_encode(["error"=>"Incorrect or missing data: 'serial', 'pc_hash', 'product_name' parameters were expected", "error_name" => "INVALID_PARAMS"]);
 }
 
